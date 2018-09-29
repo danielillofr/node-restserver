@@ -2,16 +2,17 @@ const express = require('express');
 const Usuario = require('./../models/usuario');
 const app = express();
 const _ = require('underscore');
+const { Autentificar, verificaAdmin } = require('./../middlewares/autentifiacion')
 
 const bcrypt = require('bcryptjs');
 
-app.get('/usuario', function(req, res) {
+app.get('/usuario', Autentificar, function(req, res) {
 
     let desde = req.query.desde || 0;
     let limite = req.query.limite || 5;
     desde = Number(desde);
     limite = Number(limite);
-    Usuario.find({}, 'nombre email', { limit: limite, skip: desde }, (err, usuarios) => {
+    Usuario.find({}, 'nombre email role', { limit: limite, skip: desde }, (err, usuarios) => {
         if (err) {
             return res.json({
                 ok: false
@@ -28,7 +29,7 @@ app.get('/usuario', function(req, res) {
 
 });
 
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [Autentificar, verificaAdmin], function(req, res) {
 
 
     let body = req.body;
@@ -60,7 +61,7 @@ app.post('/usuario', function(req, res) {
 
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [Autentificar, verificaAdmin], function(req, res) {
 
     let id = req.params.id;
 
@@ -87,7 +88,7 @@ app.put('/usuario/:id', function(req, res) {
 
 });
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [Autentificar, verificaAdmin], function(req, res) {
     let id = req.params.id;
     Usuario.findByIdAndRemove(id, (err, usuario) => {
         console.log(err);
