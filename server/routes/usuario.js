@@ -18,6 +18,17 @@ app.get('/usuario', Autentificar, function(req, res) {
                 ok: false
             });
         }
+        // usuarios.forEach((usuario) => {
+        //     console.log(`valor ${usuario}`);
+        //     usuario.role = 'USER_ROLE';
+        //     usuario.save();
+        //     // console.log(arr);
+
+        // });
+        // usuarios.forEach((usuario) => {
+        //     console.log(`valor ${usuario}`);
+        // });
+
         Usuario.count({}, (err, cuantos) => {
             res.json({
                 ok: true,
